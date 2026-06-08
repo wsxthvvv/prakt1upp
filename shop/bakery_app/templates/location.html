@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Как нас найти — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'home' %}" class="logo">нямка</a></li>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'about' %}">О компании</a></li>
+        <li><a href="{% url 'contacts' %}">Контакты</a></li>
+        <li><a href="{% url 'location' %}">Как нас найти</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'products' %}">Товары</a></li>
+        <li><a href="{% url 'categories' %}">Категории</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'cart' %}">Корзина</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>Как нас найти</h1>
+
+    <div class="block">
+        <h2>Адрес</h2>
+        <p>г. Москва, ул. Сладкая, д. 7<br>Павильон «нямка», 1 этаж</p>
+
+        <h2>Как добраться</h2>
+        <ul>
+            <li><strong>Метро:</strong> ст. «Кондитерская», 5 минут пешком</li>
+            <li><strong>Автобус:</strong> остановка «Сладкая улица»</li>
+            <li><strong>Парковка:</strong> бесплатная у торгового центра</li>
+        </ul>
+    </div>
+
+    <div class="map">Место для карты</div>
+</main>
+
+<footer>
+    <p>кондитерская «нямка» — сладости с душой</p>
+    <p><a href="{% url 'contacts' %}">контакты</a> · <a href="{% url 'location' %}">как нас найти</a></p>
+</footer>
+
+</body>
+</html>

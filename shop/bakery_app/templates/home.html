@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'home' %}" class="logo">нямка</a></li>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'about' %}">О компании</a></li>
+        <li><a href="{% url 'contacts' %}">Контакты</a></li>
+        <li><a href="{% url 'location' %}">Как нас найти</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'products' %}">Товары</a></li>
+        <li><a href="{% url 'categories' %}">Категории</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'cart' %}">Корзина</a></li>
+    </ul>
+</nav>
+
+<main>
+    <section class="hero">
+        <h1>Добро пожаловать в кондитерскую «нямка»</h1>
+        <p>Домашние торты, пирожные и десерты из натуральных ингредиентов. Готовим вручную, с заботой о вкусе и красоте каждого изделия.</p>
+    </section>
+
+    <section class="cards">
+        <div class="card">
+            <h2>Торты на заказ</h2>
+            <p>Авторские торты к дню рождения, свадьбе и любому празднику.</p>
+            <a href="{% url 'categories' %}" class="btn">Категории</a>
+        </div>
+        <div class="card">
+            <h2>Пирожные</h2>
+            <p>Нежные и воздушные, каждый день свежие.</p>
+            <a href="{% url 'products' %}" class="btn">Все товары</a>
+        </div>
+        <div class="card">
+            <h2>Доставка</h2>
+            <p>Привезём сладости бережно и вовремя.</p>
+            <a href="{% url 'delivery' %}" class="btn">Подробнее</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>кондитерская «нямка» — сладости с душой</p>
+    <p><a href="{% url 'contacts' %}">контакты</a> · <a href="{% url 'location' %}">как нас найти</a></p>
+</footer>
+
+</body>
+</html>

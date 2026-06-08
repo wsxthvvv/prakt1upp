@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О компании — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'home' %}" class="logo">нямка</a></li>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'about' %}">О компании</a></li>
+        <li><a href="{% url 'contacts' %}">Контакты</a></li>
+        <li><a href="{% url 'location' %}">Как нас найти</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'products' %}">Товары</a></li>
+        <li><a href="{% url 'categories' %}">Категории</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'cart' %}">Корзина</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>О компании «нямка»</h1>
+    <p>«нямка» — семейная кондитерская, открытая в 2019 году. Мы печём торты, пирожные и десерты по домашним рецептам, без искусственных красителей и лишних добавок.</p>
+
+    <div class="block">
+        <h2>Наша миссия</h2>
+        <p>Делать сладости, которые радуют глаз и вкус — натурально, красиво и честно.</p>
+    </div>
+
+    <div class="block">
+        <h2>Что мы предлагаем</h2>
+        <ul>
+            <li>Торты и пирожные на заказ</li>
+            <li>Готовые десерты в витрине</li>
+            <li>Подарочные наборы к празднику</li>
+            <li>Доставка по городу</li>
+        </ul>
+    </div>
+
+    <p>Подробнее: <a href="{% url 'contacts' %}">контакты</a> и <a href="{% url 'location' %}">как нас найти</a>.</p>
+</main>
+
+<footer>
+    <p>кондитерская «нямка» — сладости с душой</p>
+    <p><a href="{% url 'contacts' %}">контакты</a> · <a href="{% url 'location' %}">как нас найти</a></p>
+</footer>
+
+</body>
+</html>

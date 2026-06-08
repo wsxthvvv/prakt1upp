@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="{% url 'home' %}" class="logo">нямка</a></li>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'about' %}">О компании</a></li>
+        <li><a href="{% url 'contacts' %}">Контакты</a></li>
+        <li><a href="{% url 'location' %}">Как нас найти</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'products' %}">Товары</a></li>
+        <li><a href="{% url 'categories' %}">Категории</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'cart' %}">Корзина</a></li>
+    </ul>
+</nav>
+
+<main>
+    <h1>Контакты</h1>
+    <p>Свяжитесь с нами — поможем выбрать сладости и оформить заказ.</p>
+
+    <div class="item"><strong>Телефон:</strong> +7 (999) 123-45-67</div>
+    <div class="item"><strong>Электронная почта:</strong> hello@nyamka.ru</div>
+    <div class="item"><strong>Режим работы:</strong> ежедневно с 9:00 до 21:00</div>
+    <div class="item"><strong>Социальные сети:</strong> @nyamka_sweets</div>
+
+    <p>Торт на заказ оформляйте минимум за 3 дня.</p>
+</main>
+
+<footer>
+    <p>кондитерская «нямка» — сладости с душой</p>
+    <p><a href="{% url 'contacts' %}">контакты</a> · <a href="{% url 'location' %}">как нас найти</a></p>
+</footer>
+
+</body>
+</html>
