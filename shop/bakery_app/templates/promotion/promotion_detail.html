@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ promotion.name }} — акция</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>{{ promotion.name }}</h1>
+    <p class="price">Скидка: {{ promotion.discount }}%</p>
+    <p>Категория: {{ promotion.category }}</p>
+    <p>Статус: {% if promotion.is_active %}активна{% else %}не активна{% endif %}</p>
+    {% if promotion.description %}<p>{{ promotion.description }}</p>{% endif %}
+    <a href="{% url 'promotion_list' %}" class="link-back">← К списку акций</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

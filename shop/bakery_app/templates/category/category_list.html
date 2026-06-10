@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Категории — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Категории</h1>
+    <p class="page-actions"><a href="{% url 'category_create' %}" class="btn">Добавить</a></p>
+    <ul class="crud-list">
+        {% for category in category_list %}
+        <li>
+            <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
+            <span class="crud-actions">
+                <a href="{% url 'category_update' category.pk %}">Редактировать</a>
+                <a href="{% url 'category_delete' category.pk %}">Удалить</a>
+            </span>
+        </li>
+        {% empty %}
+        <li>Категорий пока нет</li>
+        {% endfor %}
+    </ul>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

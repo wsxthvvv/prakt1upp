@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Напитки — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Напитки</h1>
+    <p class="page-actions"><a href="{% url 'drink_create' %}" class="btn">Добавить</a></p>
+    <ul class="crud-list">
+        {% for drink in drink_list %}
+        <li>
+            <a href="{% url 'drink_detail' drink.pk %}">{{ drink.name }}</a> — {{ drink.price }} руб.
+            <span class="crud-actions">
+                <a href="{% url 'drink_update' drink.pk %}">Редактировать</a>
+                <a href="{% url 'drink_delete' drink.pk %}">Удалить</a>
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'products' %}" class="link-back">← К товарам</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

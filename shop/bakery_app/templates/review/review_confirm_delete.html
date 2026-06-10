@@ -1,0 +1,21 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Удаление отзыва</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Удалить отзыв «{{ review.author_name }}»?</h1>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn">Удалить</button>
+    </form>
+    <a href="{% url 'review_list' %}" class="link-back">← Отмена</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

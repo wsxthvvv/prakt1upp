@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }} — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>{{ category.name }}</h1>
+    {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+    <p class="crud-actions">
+        <a href="{% url 'category_update' category.pk %}">Редактировать</a>
+        <a href="{% url 'category_delete' category.pk %}">Удалить</a>
+    </p>
+
+    <h2>Выпечка в категории</h2>
+    <div class="cards">
+        {% for item in baking_list %}
+        <div class="card product-card" id="product-baking-{{ item.product.pk }}">
+            <a href="{% url 'baking_detail' item.product.pk %}">
+                <div class="product-img-wrap">
+                    {% if item.product.photo %}
+                    <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" class="product-img">
+                    {% else %}
+                    <span class="product-img-placeholder">фото</span>
+                    {% endif %}
+                </div>
+            </a>
+            <div class="product-card-body">
+                <h3><a href="{% url 'baking_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
+                <p class="price">{{ item.product.price }} руб.</p>
+                <div class="cart-actions">
+                    <form method="post" action="{% url 'cart_add' 'baking' item.product.pk %}?next=category&category={{ category.pk }}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-cart">В корзину</button>
+                    </form>
+                    <div class="qty-btns">
+                        <form method="post" action="{% url 'cart_remove' 'baking' item.product.pk %}?next=category&category={{ category.pk }}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-qty">−</button>
+                        </form>
+                        <span class="qty-count">{{ item.quantity }}</span>
+                        <form method="post" action="{% url 'cart_add' 'baking' item.product.pk %}?next=category&category={{ category.pk }}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-qty">+</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>В этой категории пока нет выпечки</p>
+        {% endfor %}
+    </div>
+
+    <h2>Напитки в категории</h2>
+    <div class="cards">
+        {% for item in drink_list %}
+        <div class="card product-card" id="product-drink-{{ item.product.pk }}">
+            <a href="{% url 'drink_detail' item.product.pk %}">
+                <div class="product-img-wrap">
+                    {% if item.product.photo %}
+                    <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" class="product-img">
+                    {% else %}
+                    <span class="product-img-placeholder">фото</span>
+                    {% endif %}
+                </div>
+            </a>
+            <div class="product-card-body">
+                <h3><a href="{% url 'drink_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
+                <p class="price">{{ item.product.price }} руб.</p>
+                <div class="cart-actions">
+                    <form method="post" action="{% url 'cart_add' 'drink' item.product.pk %}?next=category&category={{ category.pk }}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-cart">В корзину</button>
+                    </form>
+                    <div class="qty-btns">
+                        <form method="post" action="{% url 'cart_remove' 'drink' item.product.pk %}?next=category&category={{ category.pk }}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-qty">−</button>
+                        </form>
+                        <span class="qty-count">{{ item.quantity }}</span>
+                        <form method="post" action="{% url 'cart_add' 'drink' item.product.pk %}?next=category&category={{ category.pk }}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-qty">+</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>В этой категории пока нет напитков</p>
+        {% endfor %}
+    </div>
+
+    <p class="page-actions"><a href="{% url 'cart' %}" class="btn">Перейти в корзину</a></p>
+    <a href="{% url 'category_list' %}" class="link-back">← К списку категорий</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

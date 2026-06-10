@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Акции — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Акции</h1>
+    <ul class="crud-list">
+        {% for promo in promotion_list %}
+        <li>
+            <a href="{% url 'promotion_detail' promo.pk %}">{{ promo.name }}</a>
+            — скидка {{ promo.discount }}%
+        </li>
+        {% empty %}
+        <li>Акций пока нет</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'delivery' %}" class="link-back">← К доставке</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

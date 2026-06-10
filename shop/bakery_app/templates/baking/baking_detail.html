@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ baking.name }} — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <div class="product-detail">
+        <div>
+            {% if baking.photo %}
+            <img src="{{ baking.photo.url }}" alt="{{ baking.name }}" class="product-img-detail">
+            {% else %}
+            <div class="product-img-wrap" style="max-width:320px;border-radius:10px;height:240px;">
+                <span class="product-img-placeholder">🧁</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="product-detail-info">
+            <h1>{{ baking.name }}</h1>
+            <p class="price">{{ baking.price }} руб.</p>
+            <p>{{ baking.description }}</p>
+            {% if baking.weight %}<p>Вес: {{ baking.weight }} г</p>{% endif %}
+            {% if baking.diameter %}<p>Диаметр: {{ baking.diameter }} см</p>{% endif %}
+            <p>Начинка: {{ baking.filling }}</p>
+            <p>Доступность: {% if baking.is_exists %}да{% else %}нет{% endif %}</p>
+            <p>Категория: {{ baking.category }}</p>
+            {% if baking.is_exists %}
+            <form method="post" action="{% url 'cart_add' 'baking' baking.pk %}?next=detail">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-cart">В корзину</button>
+            </form>
+            <div class="qty-btns">
+                <form method="post" action="{% url 'cart_remove' 'baking' baking.pk %}?next=detail">{% csrf_token %}<button type="submit" class="btn btn-qty">−</button></form>
+                <span class="qty-count">{{ cart_quantity }}</span>
+                <form method="post" action="{% url 'cart_add' 'baking' baking.pk %}?next=detail">{% csrf_token %}<button type="submit" class="btn btn-qty">+</button></form>
+            </div>
+            {% else %}
+            <p>Товар временно недоступен</p>
+            {% endif %}
+            <p style="margin-top:1rem;"><a href="{% url 'baking_update' baking.pk %}">Редактировать</a> · <a href="{% url 'baking_delete' baking.pk %}">Удалить</a></p>
+        </div>
+    </div>
+    <a href="{% url 'baking_list' %}" class="link-back">← К списку выпечки</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

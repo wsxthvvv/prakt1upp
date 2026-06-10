@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.user.username }} — профиль</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Профиль: {{ profile.user.username }}</h1>
+    <div class="product-detail">
+        <div>
+            {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="{{ profile.user.username }}" class="product-img-detail">
+            {% else %}
+            <div class="product-img-wrap" style="max-width:320px;border-radius:10px;height:240px;">
+                <span class="product-img-placeholder">👤</span>
+            </div>
+            {% endif %}
+        </div>
+        <div>
+            <p><strong>Имя:</strong> {{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+            <p><strong>Email:</strong> {{ profile.user.email }}</p>
+            {% if profile.phone %}<p><strong>Телефон:</strong> {{ profile.phone }}</p>{% endif %}
+            {% if profile.address %}<p><strong>Адрес:</strong> {{ profile.address }}</p>{% endif %}
+        </div>
+    </div>
+    <a href="{% url 'profile_list' %}" class="link-back">← К списку профилей</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

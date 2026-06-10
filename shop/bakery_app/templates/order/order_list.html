@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Заказы</h1>
+    <p class="page-actions">
+        <a href="{% url 'cart' %}" class="btn">Оформить из корзины</a>
+        <a href="{% url 'order_create' %}" class="btn">Добавить вручную</a>
+    </p>
+    <ul class="crud-list">
+        {% for order in order_list %}
+        <li>
+            <a href="{% url 'order_detail' order.pk %}">{{ order.customer_name }}</a>
+            — {{ order.status }}, {{ order.items.count }} поз., {{ order.get_total }} руб.
+            <span class="crud-actions">
+                <a href="{% url 'order_update' order.pk %}">Редактировать</a>
+                <a href="{% url 'order_delete' order.pk %}">Удалить</a>
+            </span>
+        </li>
+        {% empty %}
+        <li>Заказов пока нет</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}" class="link-back">← На главную</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

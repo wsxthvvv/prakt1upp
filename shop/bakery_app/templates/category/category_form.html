@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Категория — форма</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>{% if form.instance.pk %}Редактировать{% else %}Добавить{% endif %} категорию</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Сохранить</button>
+    </form>
+    <a href="{% url 'category_list' %}" class="link-back">← К списку категорий</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

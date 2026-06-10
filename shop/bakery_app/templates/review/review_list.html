@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Отзывы — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Отзывы</h1>
+    <p class="page-actions"><a href="{% url 'review_create' %}" class="btn">Добавить</a></p>
+    <ul class="crud-list">
+        {% for review in review_list %}
+        <li>
+            <a href="{% url 'review_detail' review.pk %}">{{ review.author_name }}</a> — {{ review.rating }}/5
+            {% if review.baking %}({{ review.baking }}){% elif review.drink %}({{ review.drink }}){% endif %}
+            <span class="crud-actions">
+                <a href="{% url 'review_update' review.pk %}">Редактировать</a>
+                <a href="{% url 'review_delete' review.pk %}">Удалить</a>
+            </span>
+        </li>
+        {% empty %}
+        <li>Отзывов пока нет</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'about' %}" class="link-back">← О компании</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

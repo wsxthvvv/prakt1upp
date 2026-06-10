@@ -1,28 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Доставка — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-<nav>
-    <ul>
-        <li><a href="{% url 'home' %}" class="logo">нямка</a></li>
-        <li><a href="{% url 'home' %}">Главная</a></li>
-        <li><span class="sep">|</span></li>
-        <li><a href="{% url 'about' %}">О компании</a></li>
-        <li><a href="{% url 'contacts' %}">Контакты</a></li>
-        <li><a href="{% url 'location' %}">Как нас найти</a></li>
-        <li><span class="sep">|</span></li>
-        <li><a href="{% url 'products' %}">Товары</a></li>
-        <li><a href="{% url 'categories' %}">Категории</a></li>
-        <li><span class="sep">|</span></li>
-        <li><a href="{% url 'cart' %}">Корзина</a></li>
-    </ul>
-</nav>
+{% include 'includes/nav.html' %}
 
 <main>
     <h1>Доставка</h1>
@@ -33,24 +20,35 @@
     </div>
 
     <div class="block">
-        <h2>Сроки и стоимость</h2>
+        <h2>Зоны и стоимость</h2>
         <ul>
-            <li>Стандартная доставка — 2–3 часа, от 300 руб.</li>
-            <li>Экспресс — в течение 1 часа, от 500 руб.</li>
-            <li>Бесплатно при заказе от 3 000 руб.</li>
+            {% for zone in delivery_list %}
+            <li>{{ zone.name }} — {{ zone.price }} руб. {% if zone.description %}{{ zone.description }}{% endif %}</li>
+            {% empty %}
+            <li>Стандартная доставка — от 300 руб.</li>
+            {% endfor %}
         </ul>
     </div>
 
     <div class="block">
+        <h2>Акции</h2>
+        <ul>
+            {% for promo in promotion_list %}
+            <li><a href="{% url 'promotion_detail' promo.pk %}">{{ promo.name }}</a> — скидка {{ promo.discount }}% на {{ promo.category.name }} {% if promo.description %}{{ promo.description }}{% endif %}</li>
+            {% empty %}
+            <li>Следите за акциями в нашей кондитерской</li>
+            {% endfor %}
+        </ul>
+        <p><a href="{% url 'promotion_list' %}">Все акции</a></p>
+    </div>
+
+    <div class="block">
         <h2>Как заказать</h2>
-        <p>Выберите товары в <a href="{% url 'products' %}">каталоге</a> или позвоните по телефону из раздела <a href="{% url 'contacts' %}">контакты</a>.</p>
+        <p>Выберите товары в <a href="{% url 'products' %}">каталоге</a> или оформите <a href="{% url 'order_create' %}">заказ</a>, либо позвоните по телефону из раздела <a href="{% url 'contacts' %}">контакты</a>.</p>
     </div>
 </main>
 
-<footer>
-    <p>кондитерская «нямка» — сладости с душой</p>
-    <p><a href="{% url 'contacts' %}">контакты</a> · <a href="{% url 'location' %}">как нас найти</a></p>
-</footer>
+{% include 'includes/footer.html' %}
 
 </body>
 </html>

@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Выпечка — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Выпечка</h1>
+    <p class="page-actions"><a href="{% url 'baking_create' %}" class="btn">Добавить</a></p>
+    <ul class="crud-list">
+        {% for product in baking_list %}
+        <li>
+            <a href="{% url 'baking_detail' product.pk %}">{{ product.name }}</a> — {{ product.price }} руб.
+            <span class="crud-actions">
+                <a href="{% url 'baking_update' product.pk %}">Редактировать</a>
+                <a href="{% url 'baking_delete' product.pk %}">Удалить</a>
+            </span>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'products' %}" class="link-back">← К товарам</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

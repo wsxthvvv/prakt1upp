@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ review.author_name }} — отзыв</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>{{ review.author_name }}</h1>
+    <p>Оценка: {{ review.rating }}/5</p>
+    {% if review.baking %}<p>Товар: {{ review.baking }}</p>{% elif review.drink %}<p>Товар: {{ review.drink }}</p>{% endif %}
+    <p>{{ review.text }}</p>
+    <p>Дата: {{ review.create_date }}</p>
+    <p class="crud-actions">
+        <a href="{% url 'review_update' review.pk %}">Редактировать</a>
+        <a href="{% url 'review_delete' review.pk %}">Удалить</a>
+    </p>
+    <a href="{% url 'review_list' %}" class="link-back">← К списку отзывов</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

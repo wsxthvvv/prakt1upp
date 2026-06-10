@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профили — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <h1>Профили пользователей</h1>
+    <ul class="crud-list">
+        {% for profile in profile_list %}
+        <li>
+            <a href="{% url 'profile_detail' profile.pk %}">{{ profile.user.username }}</a>
+            {% if profile.phone %} — {{ profile.phone }}{% endif %}
+        </li>
+        {% empty %}
+        <li>Профилей пока нет</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'home' %}" class="link-back">← На главную</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

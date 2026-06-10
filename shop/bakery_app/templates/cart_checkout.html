@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оформление заказа — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+{% include 'includes/nav.html' %}
+
+<main>
+    <h1>Оформление заказа</h1>
+    <p>Укажите данные для доставки. Все позиции из корзины войдут в один заказ.</p>
+
+    <h2>Ваш заказ</h2>
+    {% for item in items %}
+    <div class="cart-item">
+        <div class="cart-item-info">
+            {% if item.product.photo %}
+            <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" class="product-img-small">
+            {% endif %}
+            <div>
+                <strong>{{ item.product.name }}</strong>
+                <p class="price">{{ item.product.price }} руб. × {{ item.quantity }} = {{ item.sum }} руб.</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <p class="total">Итого: {{ total }} руб.</p>
+
+    <h2>Данные клиента</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Подтвердить заказ</button>
+    </form>
+    <a href="{% url 'cart' %}" class="link-back">← Вернуться в корзину</a>
+</main>
+
+{% include 'includes/footer.html' %}
+
+</body>
+</html>

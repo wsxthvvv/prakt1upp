@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ drink.name }} — кондитерская «нямка»</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    <div class="product-detail">
+        <div>
+            {% if drink.photo %}
+            <img src="{{ drink.photo.url }}" alt="{{ drink.name }}" class="product-img-detail">
+            {% else %}
+            <div class="product-img-wrap" style="max-width:320px;border-radius:10px;height:240px;">
+                <span class="product-img-placeholder">☕</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="product-detail-info">
+            <h1>{{ drink.name }}</h1>
+            <p class="price">{{ drink.price }} руб.</p>
+            <p>{{ drink.description }}</p>
+            {% if drink.volume %}<p>Объём: {{ drink.volume }} мл</p>{% endif %}
+            <p>Категория: {{ drink.category }}</p>
+            {% if drink.is_exists %}
+            <form method="post" action="{% url 'cart_add' 'drink' drink.pk %}?next=detail">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-cart">В корзину</button>
+            </form>
+            <div class="qty-btns">
+                <form method="post" action="{% url 'cart_remove' 'drink' drink.pk %}?next=detail">{% csrf_token %}<button type="submit" class="btn btn-qty">−</button></form>
+                <span class="qty-count">{{ cart_quantity }}</span>
+                <form method="post" action="{% url 'cart_add' 'drink' drink.pk %}?next=detail">{% csrf_token %}<button type="submit" class="btn btn-qty">+</button></form>
+            </div>
+            {% else %}
+            <p>Товар временно недоступен</p>
+            {% endif %}
+            <p style="margin-top:1rem;"><a href="{% url 'drink_update' drink.pk %}">Редактировать</a> · <a href="{% url 'drink_delete' drink.pk %}">Удалить</a></p>
+        </div>
+    </div>
+    <a href="{% url 'drink_list' %}" class="link-back">← К списку напитков</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>

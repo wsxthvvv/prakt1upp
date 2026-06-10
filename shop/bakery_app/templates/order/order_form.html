@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказ — форма</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+{% include 'includes/nav.html' %}
+<main>
+    {% if form %}
+    <h1>Редактировать заказ</h1>
+    <p>Изменяются только данные клиента и статус. Позиции заказа не редактируются.</p>
+  {% if form.non_field_errors %}
+    <p class="price">{{ form.non_field_errors }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Сохранить</button>
+    </form>
+    {% else %}
+    <h1>Добавить заказ</h1>
+    <p>Один заказ может содержать одну позицию при ручном добавлении. Из корзины создаётся заказ с несколькими позициями.</p>
+    {% if item_form.non_field_errors %}
+    <p class="price">{{ item_form.non_field_errors }}</p>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <h2>Данные клиента</h2>
+        {{ order_form.as_p }}
+        <h2>Позиция</h2>
+        {{ item_form.as_p }}
+        <button type="submit" class="btn">Сохранить</button>
+    </form>
+    {% endif %}
+    <a href="{% url 'order_list' %}" class="link-back">← К списку заказов</a>
+</main>
+{% include 'includes/footer.html' %}
+</body>
+</html>
