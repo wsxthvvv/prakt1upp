@@ -11,6 +11,7 @@ urlpatterns = [
     path('cart/add/<str:product_type>/<int:pk>/', cart_add_views, name='cart_add'),
     path('cart/remove/<str:product_type>/<int:pk>/', cart_remove_views, name='cart_remove'),
     path('cart/checkout/', cart_checkout_views, name='cart_checkout'),
+    path('my-orders/', my_orders_views, name='my_orders'),
     path('delivery/', delivery_views, name='delivery'),
     path('categories/', CategoryListView.as_view(), name='category_list'),
     path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
@@ -41,4 +42,8 @@ urlpatterns = [
     path('profiles/<int:pk>/', ProfileDetailView.as_view(), name='profile_detail'),
     path('promotions/', PromotionListView.as_view(), name='promotion_list'),
     path('promotions/<int:pk>/', PromotionDetailView.as_view(), name='promotion_detail'),
+    
+    path("login/", login_user, name='login_page'),
+    path("registration/", registration_user, name='registration_page'),
+    path("logout/", logout_user, name='logout_page'),
 ]

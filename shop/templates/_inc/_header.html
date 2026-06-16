@@ -1,0 +1,52 @@
+<nav>
+    <ul class="nav-main">
+        <li><a href="{% url 'home' %}" class="logo">нямка</a></li>
+        <li><a href="{% url 'home' %}">Главная</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'about' %}">О компании</a></li>
+        <li><a href="{% url 'contacts' %}">Контакты</a></li>
+        <li><a href="{% url 'location' %}">Как нас найти</a></li>
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'products' %}">Товары</a></li>
+        <li><a href="{% url 'delivery' %}">Доставка</a></li>
+        <li><a href="{% url 'promotion_list' %}">Акции</a></li>
+        <li><a href="{% url 'review_list' %}">Отзывы</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'my_orders' %}">Мои заказы</a></li>
+        {% endif %}
+        <li><span class="sep">|</span></li>
+        <li><a href="{% url 'cart' %}">Корзина</a></li>
+    </ul>
+    {% if perms.bakery_app.view_category or perms.bakery_app.view_baking or perms.bakery_app.view_drink or perms.bakery_app.view_order or perms.bakery_app.view_review %}
+    <ul class="nav-crud">
+        <li><span class="nav-label">Управление:</span></li>
+        {% if perms.bakery_app.view_category %}
+        <li><a href="{% url 'category_list' %}">Категории</a></li>
+        {% endif %}
+        {% if perms.bakery_app.view_baking %}
+        <li><a href="{% url 'baking_list' %}">Выпечка</a></li>
+        {% endif %}
+        {% if perms.bakery_app.view_drink %}
+        <li><a href="{% url 'drink_list' %}">Напитки</a></li>
+        {% endif %}
+        {% if perms.bakery_app.view_order %}
+        <li><a href="{% url 'order_list' %}">Заказы</a></li>
+        {% endif %}
+        {% if perms.bakery_app.view_profile %}
+        <li><a href="{% url 'profile_list' %}">Профили</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    <header style="display: flex; justify-content: space-between; align-items: center; padding-right: 10px; padding-left: 10px;">
+        <div class="d-flex gap-2">
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout_page' %}" class="btn btn-outline-secondary btn-sm">Выйти</a>
+            {% else %}
+            <a href="{% url 'login_page' %}" class="btn btn-outline-success btn-sm">Авторизация</a>
+            <a href="{% url 'registration_page' %}" class="btn btn-outline-primary btn-sm">Регистрация</a>
+            {% endif %}
+        </div>
+    </header>
+</nav>
+{% include '_inc/_messages.html' %}

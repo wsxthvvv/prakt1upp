@@ -1,29 +1,28 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Выпечка — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <h1>Выпечка</h1>
+{% extends "base.html" %}
+
+{% block title_name %}
+Выпечка — кондитерская «нямка»
+{% endblock %}
+
+{% block content %}
+<h1>Выпечка</h1>
+    {% if perms.bakery_app.add_baking %}
     <p class="page-actions"><a href="{% url 'baking_create' %}" class="btn">Добавить</a></p>
+    {% endif %}
     <ul class="crud-list">
         {% for product in baking_list %}
         <li>
             <a href="{% url 'baking_detail' product.pk %}">{{ product.name }}</a> — {{ product.price }} руб.
             <span class="crud-actions">
+                {% if perms.bakery_app.change_baking %}
                 <a href="{% url 'baking_update' product.pk %}">Редактировать</a>
+                {% endif %}
+                {% if perms.bakery_app.delete_baking %}
                 <a href="{% url 'baking_delete' product.pk %}">Удалить</a>
+                {% endif %}
             </span>
         </li>
         {% endfor %}
     </ul>
     <a href="{% url 'products' %}" class="link-back">← К товарам</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

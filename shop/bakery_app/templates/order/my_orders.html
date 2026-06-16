@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title_name %}
+Мои заказы — кондитерская «нямка»
+{% endblock %}
+
+{% block content %}
+<h1>Мои заказы</h1>
+    <ul class="crud-list">
+        {% for order in order_list %}
+        <li>
+            <a href="{% url 'order_detail' order.pk %}">{{ order.customer_name }}</a>
+            — {{ order.status }}, {{ order.items.count }} поз., {{ order.get_total }} руб.
+        </li>
+        {% empty %}
+        <li>У вас пока нет заказов</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'products' %}" class="link-back">← К товарам</a>
+{% endblock %}

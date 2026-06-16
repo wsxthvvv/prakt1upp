@@ -1,42 +1,14 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Главная страница
+{% endblock %}
 
-<main>
-    <section class="hero">
-        <h1>Добро пожаловать в кондитерскую «нямка»</h1>
-        <p>Домашние торты, пирожные и десерты из натуральных ингредиентов. Готовим вручную, с заботой о вкусе и красоте каждого изделия.</p>
-    </section>
+{% block content %}
 
-    <section class="cards">
-        <div class="card">
-            <h2>Торты на заказ</h2>
-            <p>Авторские торты к дню рождения, свадьбе и любому празднику.</p>
-            <a href="{% url 'category_list' %}" class="btn">Категории</a>
-        </div>
-        <div class="card">
-            <h2>Пирожные</h2>
-            <p>Нежные и воздушные, каждый день свежие.</p>
-            <a href="{% url 'products' %}" class="btn">Все товары</a>
-        </div>
-        <div class="card">
-            <h2>Доставка</h2>
-            <p>Привезём сладости бережно и вовремя.</p>
-            <a href="{% url 'delivery' %}" class="btn">Подробнее</a>
-        </div>
-    </section>
-</main>
+<h2>Добро пожаловать!</h2>
+<p>Домашние торты, пирожные и десерты из натуральных ингредиентов. Готовим вручную, с заботой о вкусе и красоте каждого изделия.</p>
 
-{% include 'includes/footer.html' %}
+<p><a href="{% url 'products' %}">Смотреть все товары</a></p>
 
-</body>
-</html>
+{% endblock %}

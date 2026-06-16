@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title_name %}
+Авторизация 
+{% endblock %}
+
+{% block content %}
+<h1>Авторизация</h1>
+<div>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_div}}
+        <input type="submit" value="Войти">
+    </form>
+
+    <a href="{% url "registration_page" %}">Зарегистрироваться</a>
+    <a href="{% url "home" %}">Назад</a>
+</div>
+{% endblock %}

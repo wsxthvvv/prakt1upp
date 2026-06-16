@@ -66,6 +66,7 @@ class Profile(models.Model):
         verbose_name_plural = 'Профили'
 
 class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Автор', related_name='reviews')
     author_name = models.CharField(max_length=MAX_LENGTH, verbose_name='Наименование')
     text = models.TextField(verbose_name='Описание')
     rating = models.PositiveIntegerField(default=5, verbose_name='Оценка')
@@ -81,10 +82,10 @@ class Review(models.Model):
         verbose_name_plural = 'Отзывы'
 
 class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пользователь', related_name='orders')
     customer_name = models.CharField(max_length=MAX_LENGTH, verbose_name='Имя клиента')
     phone = models.CharField(max_length=20, verbose_name='Телефон')
     address = models.TextField(verbose_name='Адрес доставки')
-    delivery = models.ForeignKey('Delivery', on_delete=models.PROTECT, verbose_name='Зона доставки')
     status = models.CharField(max_length=MAX_LENGTH, default='новый', verbose_name='Статус')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата заказа')
 

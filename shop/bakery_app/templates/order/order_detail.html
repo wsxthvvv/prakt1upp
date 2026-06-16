@@ -1,18 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Заказ {{ order.customer_name }}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <h1>Заказ: {{ order.customer_name }}</h1>
+{% extends "base.html" %}
+
+{% block title_name %}
+Заказ {{ order.customer_name }}
+{% endblock %}
+
+{% block content %}
+<h1>Заказ: {{ order.customer_name }}</h1>
     <p>Телефон: {{ order.phone }}</p>
     <p>Адрес: {{ order.address }}</p>
-    <p>Зона доставки: {{ order.delivery }}</p>
     <p>Статус: {{ order.status }}</p>
     <p>Дата: {{ order.created_at }}</p>
 
@@ -32,12 +27,15 @@
     </ul>
     <p class="total">Итого: {{ order.get_total }} руб.</p>
 
+    {% if perms.bakery_app.change_order or perms.bakery_app.delete_order %}
     <p class="crud-actions">
+        {% if perms.bakery_app.change_order %}
         <a href="{% url 'order_update' order.pk %}">Редактировать</a>
+        {% endif %}
+        {% if perms.bakery_app.delete_order %}
         <a href="{% url 'order_delete' order.pk %}">Удалить</a>
+        {% endif %}
     </p>
+    {% endif %}
     <a href="{% url 'order_list' %}" class="link-back">← К списку заказов</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

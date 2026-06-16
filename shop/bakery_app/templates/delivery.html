@@ -1,18 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Доставка — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Доставка — кондитерская «нямка»
+{% endblock %}
 
-<main>
-    <h1>Доставка</h1>
+{% block content %}
+<h1>Доставка</h1>
 
     <div class="block">
         <h2>Зона доставки</h2>
@@ -46,9 +39,4 @@
         <h2>Как заказать</h2>
         <p>Выберите товары в <a href="{% url 'products' %}">каталоге</a> или оформите <a href="{% url 'order_create' %}">заказ</a>, либо позвоните по телефону из раздела <a href="{% url 'contacts' %}">контакты</a>.</p>
     </div>
-</main>
-
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %}

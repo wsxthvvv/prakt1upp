@@ -1,20 +1,22 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ category.name }} — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <h1>{{ category.name }}</h1>
+{% extends "base.html" %}
+
+{% block title_name %}
+{{ category.name }} — кондитерская «нямка»
+{% endblock %}
+
+{% block content %}
+<h1>{{ category.name }}</h1>
     {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+    {% if perms.bakery_app.change_category or perms.bakery_app.delete_category %}
     <p class="crud-actions">
+        {% if perms.bakery_app.change_category %}
         <a href="{% url 'category_update' category.pk %}">Редактировать</a>
+        {% endif %}
+        {% if perms.bakery_app.delete_category %}
         <a href="{% url 'category_delete' category.pk %}">Удалить</a>
+        {% endif %}
     </p>
+    {% endif %}
 
     <h2>Выпечка в категории</h2>
     <div class="cards">
@@ -98,7 +100,4 @@
 
     <p class="page-actions"><a href="{% url 'cart' %}" class="btn">Перейти в корзину</a></p>
     <a href="{% url 'category_list' %}" class="link-back">← К списку категорий</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

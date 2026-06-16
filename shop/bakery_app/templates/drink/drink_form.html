@@ -1,22 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Напиток — форма</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <h1>{% if form.instance.pk %}Редактировать{% else %}Добавить{% endif %} напиток</h1>
+{% extends "base.html" %}
+
+{% block title_name %}
+Напиток — форма
+{% endblock %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Редактировать{% else %}Добавить{% endif %} напиток</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn">Сохранить</button>
     </form>
     <a href="{% url 'drink_list' %}" class="link-back">← К списку напитков</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

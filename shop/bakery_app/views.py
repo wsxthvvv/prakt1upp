@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from .models import *
 from django.urls import reverse_lazy, reverse
 from .forms import *
+from django.contrib.auth import login, logout
 
 def home_views(request):
     return render(request, 'home.html')
@@ -118,10 +119,10 @@ def cart_checkout_views(request):
         form = CheckoutForm(request.POST)
         if form.is_valid():
             order = Order.objects.create(
+                user=request.user if request.user.is_authenticated else None,
                 customer_name=form.cleaned_data['customer_name'],
                 phone=form.cleaned_data['phone'],
                 address=form.cleaned_data['address'],
-                delivery=form.cleaned_data['delivery'],
                 status='новый',
             )
             for item in items:
@@ -141,6 +142,12 @@ def cart_checkout_views(request):
         'items': items,
         'total': total,
     })
+
+def my_orders_views(request):
+    if not request.user.is_authenticated:
+        return redirect('login_page')
+    order_list = Order.objects.filter(user=request.user)
+    return render(request, 'order/my_orders.html', {'order_list': order_list})
 
 def order_create_views(request):
     if request.method == 'POST':
@@ -278,16 +285,46 @@ class ReviewCreateView(CreateView):
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login_page')
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.author_name = self.request.user.username
+        return super().form_valid(form)
+
 class ReviewUpdateView(UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login_page')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        if self.request.user.has_perm('bakery_app.change_review'):
+            return Review.objects.all()
+        return Review.objects.filter(user=self.request.user)
+
 class ReviewDeleteView(DeleteView):
     model = Review
     template_name = 'review/review_confirm_delete.html'
     success_url = reverse_lazy('review_list')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login_page')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        if self.request.user.has_perm('bakery_app.delete_review'):
+            return Review.objects.all()
+        return Review.objects.filter(user=self.request.user)
 
 class OrderListView(ListView):
     model = Order
@@ -298,6 +335,13 @@ class OrderDetailView(DetailView):
     model = Order
     template_name = 'order/order_detail.html'
     context_object_name = 'order'
+
+    def get_queryset(self):
+        if self.request.user.has_perm('bakery_app.view_order'):
+            return Order.objects.all()
+        if self.request.user.is_authenticated:
+            return Order.objects.filter(user=self.request.user)
+        return Order.objects.none()
 
 class OrderUpdateView(UpdateView):
     model = Order
@@ -340,3 +384,37 @@ class PromotionDetailView(DetailView):
     model = Promotion
     template_name = 'promotion/promotion_detail.html'
     context_object_name = 'promotion'
+
+def login_user(request):
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            if request.GET.get('next'):
+                return redirect(request.GET.get('next'))
+            return redirect('home')
+    else:
+        form = LoginForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'auth/login.html', context)
+    
+def registration_user(request):
+    if request.method == 'POST':
+        form = RegistrationForm(data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
+            if request.GET.get('next'):
+                return redirect(request.GET.get('next'))
+            return redirect('home')
+    else:
+        form = RegistrationForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'auth/registration.html', context)
+    
+def logout_user(request):
+    logout(request)
+    return redirect('home')

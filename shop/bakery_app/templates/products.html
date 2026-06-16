@@ -1,23 +1,22 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Все товары — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Все товары — кондитерская «нямка»
+{% endblock %}
 
-<main>
-    <h1>Все товары</h1>
+{% block content %}
+<h1>Все товары</h1>
     <p>Ассортимент кондитерской «нямка» — свежая выпечка и напитки каждый день.</p>
+    {% if perms.bakery_app.view_baking or perms.bakery_app.view_drink %}
     <p class="page-actions">
+        {% if perms.bakery_app.view_baking %}
         <a href="{% url 'baking_list' %}" class="btn">Управление выпечкой</a>
+        {% endif %}
+        {% if perms.bakery_app.view_drink %}
         <a href="{% url 'drink_list' %}" class="btn">Управление напитками</a>
+        {% endif %}
     </p>
+    {% endif %}
 
     <h2>Выпечка</h2>
     <div class="cards">
@@ -102,9 +101,4 @@
     </div>
 
     <p class="page-actions"><a href="{% url 'cart' %}" class="btn">Перейти в корзину</a></p>
-</main>
-
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %}

@@ -1,15 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Заказ — форма</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    {% if form %}
+{% extends "base.html" %}
+
+{% block title_name %}
+Заказ — форма
+{% endblock %}
+
+{% block content %}
+{% if form %}
     <h1>Редактировать заказ</h1>
     <p>Изменяются только данные клиента и статус. Позиции заказа не редактируются.</p>
   {% if form.non_field_errors %}
@@ -36,7 +32,4 @@
     </form>
     {% endif %}
     <a href="{% url 'order_list' %}" class="link-back">← К списку заказов</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

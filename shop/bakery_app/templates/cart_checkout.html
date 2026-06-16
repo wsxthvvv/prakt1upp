@@ -1,17 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Оформление заказа — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Оформление заказа — кондитерская «нямка»
+{% endblock %}
 
-<main>
-    <h1>Оформление заказа</h1>
+{% block content %}
+<h1>Оформление заказа</h1>
     <p>Укажите данные для доставки. Все позиции из корзины войдут в один заказ.</p>
 
     <h2>Ваш заказ</h2>
@@ -37,9 +31,4 @@
         <button type="submit" class="btn">Подтвердить заказ</button>
     </form>
     <a href="{% url 'cart' %}" class="link-back">← Вернуться в корзину</a>
-</main>
-
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %}

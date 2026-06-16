@@ -1,16 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ baking.name }} — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <div class="product-detail">
+{% extends "base.html" %}
+
+{% block title_name %}
+{{ baking.name }} — кондитерская «нямка»
+{% endblock %}
+
+{% block content %}
+<div class="product-detail">
         <div>
             {% if baking.photo %}
             <img src="{{ baking.photo.url }}" alt="{{ baking.name }}" class="product-img-detail">
@@ -42,11 +37,18 @@
             {% else %}
             <p>Товар временно недоступен</p>
             {% endif %}
-            <p style="margin-top:1rem;"><a href="{% url 'baking_update' baking.pk %}">Редактировать</a> · <a href="{% url 'baking_delete' baking.pk %}">Удалить</a></p>
+            {% if perms.bakery_app.change_baking or perms.bakery_app.delete_baking %}
+            <p style="margin-top:1rem;">
+                {% if perms.bakery_app.change_baking %}
+                <a href="{% url 'baking_update' baking.pk %}">Редактировать</a>
+                {% endif %}
+                {% if perms.bakery_app.change_baking and perms.bakery_app.delete_baking %} · {% endif %}
+                {% if perms.bakery_app.delete_baking %}
+                <a href="{% url 'baking_delete' baking.pk %}">Удалить</a>
+                {% endif %}
+            </p>
+            {% endif %}
         </div>
     </div>
     <a href="{% url 'baking_list' %}" class="link-back">← К списку выпечки</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

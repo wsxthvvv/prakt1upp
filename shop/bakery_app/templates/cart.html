@@ -1,18 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Корзина — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Корзина — кондитерская «нямка»
+{% endblock %}
 
-<main>
-    <h1>Корзина</h1>
+{% block content %}
+<h1>Корзина</h1>
 
     {% if items %}
         {% for item in items %}
@@ -49,9 +42,4 @@
     {% endif %}
 
     <p class="page-actions"><a href="{% url 'products' %}" class="btn">Перейти к товарам</a></p>
-</main>
-
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %}

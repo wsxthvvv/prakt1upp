@@ -1,15 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Профили — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <h1>Профили пользователей</h1>
+{% extends "base.html" %}
+
+{% block title_name %}
+Профили — кондитерская «нямка»
+{% endblock %}
+
+{% block content %}
+<h1>Профили пользователей</h1>
     <ul class="crud-list">
         {% for profile in profile_list %}
         <li>
@@ -21,7 +17,4 @@
         {% endfor %}
     </ul>
     <a href="{% url 'home' %}" class="link-back">← На главную</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}

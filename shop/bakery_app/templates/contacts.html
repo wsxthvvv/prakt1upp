@@ -1,18 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контакты — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Контакты — кондитерская «нямка»
+{% endblock %}
 
-<main>
-    <h1>Контакты</h1>
+{% block content %}
+<h1>Контакты</h1>
     <p>Свяжитесь с нами — поможем выбрать сладости и оформить заказ.</p>
 
     <div class="item"><strong>Телефон:</strong> +7 (999) 123-45-67</div>
@@ -21,9 +14,4 @@
     <div class="item"><strong>Социальные сети:</strong> @nyamka_sweets</div>
 
     <p>Торт на заказ оформляйте минимум за 3 дня.</p>
-</main>
-
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %}

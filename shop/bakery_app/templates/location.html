@@ -1,18 +1,11 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Как нас найти — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
+{% extends "base.html" %}
 
-{% include 'includes/nav.html' %}
+{% block title_name %}
+Как нас найти — кондитерская «нямка»
+{% endblock %}
 
-<main>
-    <h1>Как нас найти</h1>
+{% block content %}
+<h1>Как нас найти</h1>
 
     <div class="block">
         <h2>Адрес</h2>
@@ -27,9 +20,4 @@
     </div>
 
     <div class="map">Место для карты</div>
-</main>
-
-{% include 'includes/footer.html' %}
-
-</body>
-</html>
+{% endblock %}

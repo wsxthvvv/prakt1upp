@@ -1,24 +1,26 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Отзывы — кондитерская «нямка»</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-{% include 'includes/nav.html' %}
-<main>
-    <h1>Отзывы</h1>
-    <p class="page-actions"><a href="{% url 'review_create' %}" class="btn">Добавить</a></p>
+{% extends "base.html" %}
+
+{% block title_name %}
+Отзывы — кондитерская «нямка»
+{% endblock %}
+
+{% block content %}
+<h1>Отзывы</h1>
+    {% if user.is_authenticated %}
+    <p class="page-actions"><a href="{% url 'review_create' %}" class="btn">Оставить отзыв</a></p>
+    {% endif %}
     <ul class="crud-list">
         {% for review in review_list %}
         <li>
             <a href="{% url 'review_detail' review.pk %}">{{ review.author_name }}</a> — {{ review.rating }}/5
             {% if review.baking %}({{ review.baking }}){% elif review.drink %}({{ review.drink }}){% endif %}
             <span class="crud-actions">
+                {% if review.user == user or perms.bakery_app.change_review %}
                 <a href="{% url 'review_update' review.pk %}">Редактировать</a>
+                {% endif %}
+                {% if review.user == user or perms.bakery_app.delete_review %}
                 <a href="{% url 'review_delete' review.pk %}">Удалить</a>
+                {% endif %}
             </span>
         </li>
         {% empty %}
@@ -26,7 +28,4 @@
         {% endfor %}
     </ul>
     <a href="{% url 'about' %}" class="link-back">← О компании</a>
-</main>
-{% include 'includes/footer.html' %}
-</body>
-</html>
+{% endblock %}
