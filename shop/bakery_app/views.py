@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.decorators import method_decorator
 from .models import *
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from .forms import *
 from django.contrib.auth import login, logout
+from basket.basket import Basket
+from basket.forms import BasketAddProductForm
 
 def home_views(request):
     return render(request, 'home.html')
@@ -20,15 +24,19 @@ def location_views(request):
     return render(request, 'location.html')
 
 def products_views(request):
-    cart = request.session.get('cart', {})
+    basket = Basket(request)
     baking_list = []
     for product in Baking.objects.filter(is_exists=True):
-        key = f'baking_{product.pk}'
-        baking_list.append({'product': product, 'quantity': cart.get(key, 0)})
+        baking_list.append({
+            'product': product,
+            'quantity': basket.get_quantity('baking', product),
+        })
     drink_list = []
     for product in Drink.objects.filter(is_exists=True):
-        key = f'drink_{product.pk}'
-        drink_list.append({'product': product, 'quantity': cart.get(key, 0)})
+        drink_list.append({
+            'product': product,
+            'quantity': basket.get_quantity('drink', product),
+        })
     return render(request, 'products.html', {
         'baking_list': baking_list,
         'drink_list': drink_list,
@@ -42,137 +50,34 @@ def delivery_views(request):
         'promotion_list': promotion_list,
     })
 
-def get_category_products(cart, category):
+def get_category_products(basket, category):
     baking_list = []
     for product in Baking.objects.filter(category=category, is_exists=True):
-        key = f'baking_{product.pk}'
-        baking_list.append({'product': product, 'quantity': cart.get(key, 0)})
+        baking_list.append({
+            'product': product,
+            'quantity': basket.get_quantity('baking', product),
+        })
     drink_list = []
     for product in Drink.objects.filter(category=category, is_exists=True):
-        key = f'drink_{product.pk}'
-        drink_list.append({'product': product, 'quantity': cart.get(key, 0)})
+        drink_list.append({
+            'product': product,
+            'quantity': basket.get_quantity('drink', product),
+        })
     return baking_list, drink_list
 
-def cart_redirect(request, product_type, pk):
-    next_page = request.GET.get('next')
-    if next_page == 'cart':
-        return redirect('cart')
-    if next_page == 'category':
-        category_id = request.GET.get('category')
-        if category_id:
-            return redirect('category_detail', pk=category_id)
-    if next_page == 'detail':
-        if product_type == 'baking':
-            return redirect('baking_detail', pk=pk)
-        return redirect('drink_detail', pk=pk)
-    return redirect(reverse('products') + f'#product-{product_type}-{pk}')
-
-def get_cart_data(request):
-    cart = request.session.get('cart', {})
-    items = []
-    total = 0
-    for key, quantity in cart.items():
-        product_type, pk = key.split('_')
-        if product_type == 'baking':
-            product = Baking.objects.filter(pk=pk).first()
-        else:
-            product = Drink.objects.filter(pk=pk).first()
-        if product:
-            item_sum = product.price * quantity
-            items.append({
-                'product': product,
-                'type': product_type,
-                'quantity': quantity,
-                'sum': item_sum,
-            })
-            total += item_sum
-    return items, total
-
-def cart_views(request):
-    items, total = get_cart_data(request)
-    return render(request, 'cart.html', {'items': items, 'total': total})
-
-def cart_add_views(request, product_type, pk):
-    if request.method == 'POST':
-        cart = request.session.get('cart', {})
-        key = f'{product_type}_{pk}'
-        cart[key] = cart.get(key, 0) + 1
-        request.session['cart'] = cart
-    return cart_redirect(request, product_type, pk)
-
-def cart_remove_views(request, product_type, pk):
-    if request.method == 'POST':
-        cart = request.session.get('cart', {})
-        key = f'{product_type}_{pk}'
-        if key in cart:
-            cart[key] -= 1
-            if cart[key] <= 0:
-                del cart[key]
-        request.session['cart'] = cart
-    return cart_redirect(request, product_type, pk)
-
-def cart_checkout_views(request):
-    items, total = get_cart_data(request)
-    if not items:
-        return redirect('cart')
-    if request.method == 'POST':
-        form = CheckoutForm(request.POST)
-        if form.is_valid():
-            order = Order.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                customer_name=form.cleaned_data['customer_name'],
-                phone=form.cleaned_data['phone'],
-                address=form.cleaned_data['address'],
-                status='новый',
-            )
-            for item in items:
-                OrderItem.objects.create(
-                    order=order,
-                    baking=item['product'] if item['type'] == 'baking' else None,
-                    drink=item['product'] if item['type'] == 'drink' else None,
-                    quantity=item['quantity'],
-                )
-            request.session['cart'] = {}
-            messages.success(request, 'Заказ оформлен!')
-            return redirect('order_detail', pk=order.pk)
-    else:
-        form = CheckoutForm()
-    return render(request, 'cart_checkout.html', {
-        'form': form,
-        'items': items,
-        'total': total,
-    })
-
+@login_required(login_url='/login/')
 def my_orders_views(request):
-    if not request.user.is_authenticated:
-        return redirect('login_page')
     order_list = Order.objects.filter(user=request.user)
     return render(request, 'order/my_orders.html', {'order_list': order_list})
 
-def order_create_views(request):
-    if request.method == 'POST':
-        order_form = OrderForm(request.POST)
-        item_form = OrderItemForm(request.POST)
-        if order_form.is_valid() and item_form.is_valid():
-            order = order_form.save()
-            item = item_form.save(commit=False)
-            item.order = order
-            item.save()
-            messages.success(request, 'Заказ добавлен!')
-            return redirect('order_list')
-    else:
-        order_form = OrderForm()
-        item_form = OrderItemForm()
-    return render(request, 'order/order_form.html', {
-        'order_form': order_form,
-        'item_form': item_form,
-    })
 
+@method_decorator(permission_required('bakery_app.view_category', login_url='/login/'), name='dispatch')
 class CategoryListView(ListView):
     model = Category
     template_name = 'category/category_list.html'
     context_object_name = 'category_list'
 
+@method_decorator(permission_required('bakery_app.view_category', login_url='/login/'), name='dispatch')
 class CategoryDetailView(DetailView):
     model = Category
     template_name = 'category/category_detail.html'
@@ -180,29 +85,33 @@ class CategoryDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = self.request.session.get('cart', {})
-        baking_list, drink_list = get_category_products(cart, self.object)
+        basket = Basket(self.request)
+        baking_list, drink_list = get_category_products(basket, self.object)
         context['baking_list'] = baking_list
         context['drink_list'] = drink_list
         return context
 
+@method_decorator(permission_required('bakery_app.add_category', login_url='/login/'), name='dispatch')
 class CategoryCreateView(CreateView):
     model = Category
     form_class = CategoryForm
     template_name = 'category/category_form.html'
     success_url = reverse_lazy('category_list')
 
+@method_decorator(permission_required('bakery_app.change_category', login_url='/login/'), name='dispatch')
 class CategoryUpdateView(UpdateView):
     model = Category
     form_class = CategoryForm
     template_name = 'category/category_form.html'
     success_url = reverse_lazy('category_list')
 
+@method_decorator(permission_required('bakery_app.delete_category', login_url='/login/'), name='dispatch')
 class CategoryDeleteView(DeleteView):
     model = Category
     template_name = 'category/category_confirm_delete.html'
     success_url = reverse_lazy('category_list')
 
+@method_decorator(permission_required('bakery_app.view_baking', login_url='/login/'), name='dispatch')
 class BakingListView(ListView):
     model = Baking
     template_name = 'baking/baking_list.html'
@@ -215,27 +124,32 @@ class BakingDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = self.request.session.get('cart', {})
-        context['cart_quantity'] = cart.get(f'baking_{self.object.pk}', 0)
+        basket = Basket(self.request)
+        context['form_basket'] = BasketAddProductForm()
+        context['cart_quantity'] = basket.get_quantity('baking', self.object)
         return context
 
+@method_decorator(permission_required('bakery_app.add_baking', login_url='/login/'), name='dispatch')
 class BakingCreateView(CreateView):
     model = Baking
     form_class = BakingForm
     template_name = 'baking/baking_form.html'
     success_url = reverse_lazy('baking_list')
 
+@method_decorator(permission_required('bakery_app.change_baking', login_url='/login/'), name='dispatch')
 class BakingUpdateView(UpdateView):
     model = Baking
     form_class = BakingForm
     template_name = 'baking/baking_form.html'
     success_url = reverse_lazy('baking_list')
 
+@method_decorator(permission_required('bakery_app.delete_baking', login_url='/login/'), name='dispatch')
 class BakingDeleteView(DeleteView):
     model = Baking
     template_name = 'baking/baking_confirm_delete.html'
     success_url = reverse_lazy('baking_list')
 
+@method_decorator(permission_required('bakery_app.view_drink', login_url='/login/'), name='dispatch')
 class DrinkListView(ListView):
     model = Drink
     template_name = 'drink/drink_list.html'
@@ -248,22 +162,26 @@ class DrinkDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cart = self.request.session.get('cart', {})
-        context['cart_quantity'] = cart.get(f'drink_{self.object.pk}', 0)
+        basket = Basket(self.request)
+        context['form_basket'] = BasketAddProductForm()
+        context['cart_quantity'] = basket.get_quantity('drink', self.object)
         return context
 
+@method_decorator(permission_required('bakery_app.add_drink', login_url='/login/'), name='dispatch')
 class DrinkCreateView(CreateView):
     model = Drink
     form_class = DrinkForm
     template_name = 'drink/drink_form.html'
     success_url = reverse_lazy('drink_list')
 
+@method_decorator(permission_required('bakery_app.change_drink', login_url='/login/'), name='dispatch')
 class DrinkUpdateView(UpdateView):
     model = Drink
     form_class = DrinkForm
     template_name = 'drink/drink_form.html'
     success_url = reverse_lazy('drink_list')
 
+@method_decorator(permission_required('bakery_app.delete_drink', login_url='/login/'), name='dispatch')
 class DrinkDeleteView(DeleteView):
     model = Drink
     template_name = 'drink/drink_confirm_delete.html'
@@ -279,53 +197,42 @@ class ReviewDetailView(DetailView):
     template_name = 'review/review_detail.html'
     context_object_name = 'review'
 
+@method_decorator(login_required(login_url='/login/'), name='dispatch')
 class ReviewCreateView(CreateView):
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect('login_page')
-        return super().dispatch(request, *args, **kwargs)
-
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.author_name = self.request.user.username
         return super().form_valid(form)
 
+@method_decorator(login_required(login_url='/login/'), name='dispatch')
 class ReviewUpdateView(UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = 'review/review_form.html'
     success_url = reverse_lazy('review_list')
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect('login_page')
-        return super().dispatch(request, *args, **kwargs)
-
     def get_queryset(self):
         if self.request.user.has_perm('bakery_app.change_review'):
             return Review.objects.all()
         return Review.objects.filter(user=self.request.user)
 
+@method_decorator(login_required(login_url='/login/'), name='dispatch')
 class ReviewDeleteView(DeleteView):
     model = Review
     template_name = 'review/review_confirm_delete.html'
     success_url = reverse_lazy('review_list')
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect('login_page')
-        return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
         if self.request.user.has_perm('bakery_app.delete_review'):
             return Review.objects.all()
         return Review.objects.filter(user=self.request.user)
 
+@method_decorator(permission_required('bakery_app.view_order', login_url='/login/'), name='dispatch')
 class OrderListView(ListView):
     model = Order
     template_name = 'order/order_list.html'
@@ -343,16 +250,18 @@ class OrderDetailView(DetailView):
             return Order.objects.filter(user=self.request.user)
         return Order.objects.none()
 
+@method_decorator(permission_required('bakery_app.change_order', login_url='/login/'), name='dispatch')
 class OrderUpdateView(UpdateView):
     model = Order
     form_class = OrderForm
-    template_name = 'order/order_form.html'
+    template_name = 'order/order_edit.html'
     success_url = reverse_lazy('order_list')
 
     def form_valid(self, form):
         messages.success(self.request, 'Заказ обновлён!')
         return super().form_valid(form)
 
+@method_decorator(permission_required('bakery_app.delete_order', login_url='/login/'), name='dispatch')
 class OrderDeleteView(DeleteView):
     model = Order
     template_name = 'order/order_confirm_delete.html'
@@ -362,11 +271,13 @@ class OrderDeleteView(DeleteView):
         messages.success(self.request, 'Заказ удалён!')
         return super().form_valid(form)
 
+@method_decorator(permission_required('bakery_app.view_profile', login_url='/login/'), name='dispatch')
 class ProfileListView(ListView):
     model = Profile
     template_name = 'profile/profile_list.html'
     context_object_name = 'profile_list'
 
+@method_decorator(permission_required('bakery_app.view_profile', login_url='/login/'), name='dispatch')
 class ProfileDetailView(DetailView):
     model = Profile
     template_name = 'profile/profile_detail.html'

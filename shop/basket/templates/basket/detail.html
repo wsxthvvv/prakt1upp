@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title_name %}
+Ваша корзина
+{% endblock %}
+
+{% block content %}
+<h1>Ваша корзина</h1>
+
+{% if basket|length %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Изображение</th>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Цена за шт.</th>
+            <th>Цена за позицию</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in basket %}
+        <tr>
+            <td>
+                {% if item.product.photo %}
+                <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" class="product-img-small">
+                {% else %}
+                <span class="product-img-placeholder">🧁</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if item.product_type == 'baking' %}
+                <a href="{% url 'baking_detail' item.product.pk %}">{{ item.product.name }}</a>
+                {% else %}
+                <a href="{% url 'drink_detail' item.product.pk %}">{{ item.product.name }}</a>
+                {% endif %}
+            </td>
+            <td>{{ item.count }} шт.</td>
+            <td>{{ item.price }} руб.</td>
+            <td>{{ item.total_price }} руб.</td>
+            <td>
+                <a href="{% url 'basket_remove' item.product_type item.product.pk %}" class="btn">Убрать из корзины</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2"><strong>Итого</strong></td>
+            <td><strong>{{ basket|length }} шт.</strong></td>
+            <td></td>
+            <td><strong>{{ basket.get_total_price }} руб.</strong></td>
+            <td></td>
+        </tr>
+    </tfoot>
+</table>
+
+<p class="page-actions">
+    <a href="{% url 'basket_clear' %}" class="btn">Очистить корзину</a>
+    <a href="{% url 'products' %}" class="btn">Назад к каталогу</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'order_open' %}" class="btn">Купить</a>
+    {% else %}
+    <a href="{% url 'login_page' %}?next={% url 'order_open' %}" class="btn">Купить</a>
+    {% endif %}
+</p>
+{% else %}
+<div class="empty">
+    <p>Корзина пуста</p>
+    <p>Добавьте товары из каталога</p>
+</div>
+<p class="page-actions"><a href="{% url 'products' %}" class="btn">Назад к каталогу</a></p>
+{% endif %}
+{% endblock %}

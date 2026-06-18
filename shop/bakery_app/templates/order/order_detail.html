@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
 {% block title_name %}
-Заказ {{ order.customer_name }}
+Заказ {{ order.buyer_firstname }} {{ order.buyer_name }}
 {% endblock %}
 
 {% block content %}
-<h1>Заказ: {{ order.customer_name }}</h1>
-    <p>Телефон: {{ order.phone }}</p>
-    <p>Адрес: {{ order.address }}</p>
+<h1>Заказ: {{ order.buyer_firstname }} {{ order.buyer_name }}</h1>
+    {% if order.phone %}<p>Телефон: {{ order.phone }}</p>{% endif %}
+    <p>Адрес: {{ order.delivery_address|default:order.address }}</p>
+    <p>Способ доставки: {{ order.get_delivery_type_display }}</p>
+    {% if order.comment %}<p>Комментарий: {{ order.comment }}</p>{% endif %}
     <p>Статус: {{ order.status }}</p>
     <p>Дата: {{ order.created_at }}</p>
 

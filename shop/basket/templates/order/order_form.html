@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title_name %}
+Создание заказа
+{% endblock %}
+
+{% block content %}
+<h1>Создание заказа</h1>
+
+<form method="post" action="{% url 'basket_buy' %}">
+    {% csrf_token %}
+    {{ form_order.as_div }}
+    <button type="submit" class="btn">Подтвердить заказ</button>
+</form>
+
+<p class="page-actions"><a href="{% url 'basket_detail' %}" class="link-back">Обратно к корзине</a></p>
+{% endblock %}

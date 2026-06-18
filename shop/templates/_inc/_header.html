@@ -15,7 +15,7 @@
         <li><a href="{% url 'my_orders' %}">Мои заказы</a></li>
         {% endif %}
         <li><span class="sep">|</span></li>
-        <li><a href="{% url 'cart' %}">Корзина</a></li>
+        <li><a href="{% url 'basket_detail' %}">Корзина</a></li>
     </ul>
     {% if perms.bakery_app.view_category or perms.bakery_app.view_baking or perms.bakery_app.view_drink or perms.bakery_app.view_order or perms.bakery_app.view_review %}
     <ul class="nav-crud">

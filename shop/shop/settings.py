@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bakery_app',
+    'basket',
     'shop_api',
     'rest_framework',
 ]
@@ -142,3 +143,6 @@ REST_FRAMEWORK = {
 }
 
 LOGIN_URL = '/login/'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+BASKET_SESSION_ID = 'basket'

@@ -82,17 +82,38 @@ class Review(models.Model):
         verbose_name_plural = 'Отзывы'
 
 class Order(models.Model):
+    SHOP = 'SH'
+    COURIER = 'CR'
+    PICKUPPOINT = 'PP'
+    TYPE_DELIVERY = [
+        (SHOP, 'Вывоз из магазина'),
+        (COURIER, 'Курьер'),
+        (PICKUPPOINT, 'Пункт выдачи заказов'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Пользователь', related_name='orders')
-    customer_name = models.CharField(max_length=MAX_LENGTH, verbose_name='Имя клиента')
-    phone = models.CharField(max_length=20, verbose_name='Телефон')
-    address = models.TextField(verbose_name='Адрес доставки')
+    buyer_firstname = models.CharField(max_length=MAX_LENGTH, verbose_name='Фамилия покупателя', default='')
+    buyer_name = models.CharField(max_length=MAX_LENGTH, verbose_name='Имя покупателя', default='')
+    buyer_surname = models.CharField(max_length=MAX_LENGTH, blank=True, null=True, verbose_name='Отчество покупателя')
+    comment = models.CharField(max_length=MAX_LENGTH, blank=True, null=True, verbose_name='Комментарий к заказу')
+    delivery_address = models.TextField(verbose_name='Адрес доставки', default='')
+    delivery_type = models.CharField(max_length=7, choices=TYPE_DELIVERY, default=SHOP, verbose_name='Способ доставки')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Сумма заказа')
+    customer_name = models.CharField(max_length=MAX_LENGTH, verbose_name='Имя клиента', blank=True, default='')
+    phone = models.CharField(max_length=20, verbose_name='Телефон', blank=True, default='')
+    address = models.TextField(verbose_name='Адрес доставки (устар.)', blank=True, default='')
     status = models.CharField(max_length=MAX_LENGTH, default='новый', verbose_name='Статус')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата заказа')
 
     def __str__(self):
-        return self.customer_name
+        name = f'{self.buyer_firstname} {self.buyer_name}'.strip()
+        if not name:
+            name = self.customer_name
+        return f'{self.pk} - {name} ({self.created_at})'
 
     def get_total(self):
+        if self.price:
+            return self.price
         total = 0
         for item in self.items.all():
             if item.baking:
@@ -100,6 +121,14 @@ class Order(models.Model):
             elif item.drink:
                 total += item.drink.price * item.quantity
         return total
+
+    def save(self, *args, **kwargs):
+        name = f'{self.buyer_firstname} {self.buyer_name}'.strip()
+        if name:
+            self.customer_name = name
+        if self.delivery_address:
+            self.address = self.delivery_address
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Заказ'

@@ -35,23 +35,18 @@
                 <h3><a href="{% url 'baking_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
                 <p class="category-tag">{{ item.product.category }}</p>
                 <p class="price">{{ item.product.price }} руб.</p>
+                {% if user.is_authenticated %}
                 <div class="cart-actions">
-                    <form method="post" action="{% url 'cart_add' 'baking' item.product.pk %}">
+                    <form method="post" action="{% url 'basket_add' 'baking' item.product.pk %}">
                         {% csrf_token %}
+                        <input type="hidden" name="count" value="1">
                         <button type="submit" class="btn btn-cart">В корзину</button>
                     </form>
-                    <div class="qty-btns">
-                        <form method="post" action="{% url 'cart_remove' 'baking' item.product.pk %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-qty">−</button>
-                        </form>
-                        <span class="qty-count">{{ item.quantity }}</span>
-                        <form method="post" action="{% url 'cart_add' 'baking' item.product.pk %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-qty">+</button>
-                        </form>
-                    </div>
                 </div>
+                {% endif %}
+                {% if item.quantity %}
+                <p>В корзине: {{ item.quantity }} шт.</p>
+                {% endif %}
             </div>
         </div>
         {% empty %}
@@ -76,23 +71,18 @@
                 <h3><a href="{% url 'drink_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
                 <p class="category-tag">{{ item.product.category }}</p>
                 <p class="price">{{ item.product.price }} руб.</p>
+                {% if user.is_authenticated %}
                 <div class="cart-actions">
-                    <form method="post" action="{% url 'cart_add' 'drink' item.product.pk %}">
+                    <form method="post" action="{% url 'basket_add' 'drink' item.product.pk %}">
                         {% csrf_token %}
+                        <input type="hidden" name="count" value="1">
                         <button type="submit" class="btn btn-cart">В корзину</button>
                     </form>
-                    <div class="qty-btns">
-                        <form method="post" action="{% url 'cart_remove' 'drink' item.product.pk %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-qty">−</button>
-                        </form>
-                        <span class="qty-count">{{ item.quantity }}</span>
-                        <form method="post" action="{% url 'cart_add' 'drink' item.product.pk %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-qty">+</button>
-                        </form>
-                    </div>
                 </div>
+                {% endif %}
+                {% if item.quantity %}
+                <p>В корзине: {{ item.quantity }} шт.</p>
+                {% endif %}
             </div>
         </div>
         {% empty %}
@@ -100,5 +90,5 @@
         {% endfor %}
     </div>
 
-    <p class="page-actions"><a href="{% url 'cart' %}" class="btn">Перейти в корзину</a></p>
+    <p class="page-actions"><a href="{% url 'basket_detail' %}" class="btn">Перейти в корзину</a></p>
 {% endblock %}

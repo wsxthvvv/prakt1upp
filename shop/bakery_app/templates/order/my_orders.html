@@ -9,7 +9,7 @@
     <ul class="crud-list">
         {% for order in order_list %}
         <li>
-            <a href="{% url 'order_detail' order.pk %}">{{ order.customer_name }}</a>
+            <a href="{% url 'order_detail' order.pk %}">{{ order.buyer_firstname }} {{ order.buyer_name }}</a>
             — {{ order.status }}, {{ order.items.count }} поз., {{ order.get_total }} руб.
         </li>
         {% empty %}

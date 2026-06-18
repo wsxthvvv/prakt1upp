@@ -7,15 +7,12 @@
 {% block content %}
 <h1>Заказы</h1>
     <p class="page-actions">
-        <a href="{% url 'cart' %}" class="btn">Оформить из корзины</a>
-        {% if perms.bakery_app.add_order %}
-        <a href="{% url 'order_create' %}" class="btn">Добавить вручную</a>
-        {% endif %}
+        <a href="{% url 'basket_detail' %}" class="btn">Оформить из корзины</a>
     </p>
     <ul class="crud-list">
         {% for order in order_list %}
         <li>
-            <a href="{% url 'order_detail' order.pk %}">{{ order.customer_name }}</a>
+            <a href="{% url 'order_detail' order.pk %}">{{ order.buyer_firstname }} {{ order.buyer_name }}</a>
             — {{ order.status }}, {{ order.items.count }} поз., {{ order.get_total }} руб.
             <span class="crud-actions">
                 {% if perms.bakery_app.change_order %}

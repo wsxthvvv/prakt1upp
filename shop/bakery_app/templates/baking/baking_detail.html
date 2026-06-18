@@ -25,15 +25,16 @@
             <p>Доступность: {% if baking.is_exists %}да{% else %}нет{% endif %}</p>
             <p>Категория: {{ baking.category }}</p>
             {% if baking.is_exists %}
-            <form method="post" action="{% url 'cart_add' 'baking' baking.pk %}?next=detail">
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'basket_add' 'baking' baking.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-cart">В корзину</button>
+                {{ form_basket }}
+                <button type="submit" class="btn btn-success">Добавить в корзину</button>
             </form>
-            <div class="qty-btns">
-                <form method="post" action="{% url 'cart_remove' 'baking' baking.pk %}?next=detail">{% csrf_token %}<button type="submit" class="btn btn-qty">−</button></form>
-                <span class="qty-count">{{ cart_quantity }}</span>
-                <form method="post" action="{% url 'cart_add' 'baking' baking.pk %}?next=detail">{% csrf_token %}<button type="submit" class="btn btn-qty">+</button></form>
-            </div>
+            {% endif %}
+            {% if cart_quantity %}
+            <p>В корзине: {{ cart_quantity }} шт.</p>
+            {% endif %}
             {% else %}
             <p>Товар временно недоступен</p>
             {% endif %}
